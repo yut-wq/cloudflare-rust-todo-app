@@ -1,0 +1,19 @@
+{
+  "name": "TODO App",
+  "short_name": "TODO",
+  "description": "SvelteKit + Cloudflare Pages で作成したシンプルなTODOアプリ",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "lang": "ja"
+}
