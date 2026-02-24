@@ -5,7 +5,10 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"dev:local": "cp .env.example .env.local && vite dev",
 		"build": "vite build",
+		"build:production": "vite build",
+		"build:check": "node -e \"if(!process.env.PUBLIC_API_BASE_URL) { console.error('❌ PUBLIC_API_BASE_URL not set for production build'); process.exit(1); } else { console.log('✅ Building with API URL:', process.env.PUBLIC_API_BASE_URL); }\" && vite build",
 		"preview": "pnpm run build && wrangler pages dev",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -16,7 +19,9 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
 		"deploy": "pnpm run build && wrangler pages deploy",
-		"cf-typegen": "wrangler types src/worker-configuration.d.ts"
+		"cf-typegen": "wrangler types src/worker-configuration.d.ts",
+		"env:setup": "cp .env.example .env.local && echo '✅ Created .env.local from .env.example'",
+		"env:check": "node -e \"console.log('Current API URL:', process.env.PUBLIC_API_BASE_URL || 'Using default')\""
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",

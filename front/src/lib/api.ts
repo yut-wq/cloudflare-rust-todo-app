@@ -1,4 +1,5 @@
 import { dev } from '$app/environment';
+import { env } from '$env/dynamic/public';
 
 export interface Todo {
 	id: number;
@@ -14,10 +15,29 @@ export interface UpdateTodoRequest {
 	completed: boolean;
 }
 
-// API基本URL（開発環境と本番環境で切り替え）
-const API_BASE_URL = dev
-	? 'http://localhost:8787' // 開発時のワーカーURL
-	: 'https://my-rust-worker.your-subdomain.workers.dev'; // 本番のワーカーURL
+// API基本URL（環境変数から動的に取得、フォールバック付き）
+const getApiBaseUrl = (): string => {
+	// 1. PUBLIC_API_BASE_URL 環境変数から取得
+	if (env.PUBLIC_API_BASE_URL) {
+		return env.PUBLIC_API_BASE_URL;
+	}
+
+	// 2. デフォルト値（開発/本番環境で分岐）
+	return dev
+		? 'http://localhost:8787' // 開発時のワーカーURL
+		: 'https://my-rust-worker.your-subdomain.workers.dev'; // 本番のワーカーURL
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// デバッグ用：現在使用されているAPIのURLをログ出力（開発環境のみ）
+if (dev) {
+	console.log('API Base URL:', API_BASE_URL);
+	console.log('Environment variables:', {
+		PUBLIC_API_BASE_URL: env.PUBLIC_API_BASE_URL,
+		dev
+	});
+}
 
 class TodoApi {
 	private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
@@ -30,6 +50,13 @@ class TodoApi {
 			},
 			...options
 		});
+
+		if (dev) {
+			console.log(`API Request: ${url}`, {
+				method: options?.method || 'GET',
+				status: response.status
+			});
+		}
 
 		if (!response.ok) {
 			throw new Error(`API request failed: ${response.status} ${response.statusText}`);
