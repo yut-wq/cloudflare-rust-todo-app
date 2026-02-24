@@ -147,6 +147,152 @@ curl -X DELETE https://your-worker-url.workers.dev/api/todos/1
 - ✅ エラーハンドリング
 - ✅ ローディング状態
 
+## API仕様
+
+本アプリケーションのAPI仕様は OpenAPI 3.0.3 形式で記述されています。
+
+### 📋 API仕様書
+
+詳細なAPI仕様は [openapi.yaml](./openapi.yaml) を参照してください。
+
+### 🔗 主要エンドポイント
+
+| メソッド | パス              | 説明         |
+| -------- | ----------------- | ------------ |
+| `GET`    | `/api/todos`      | TODO一覧取得 |
+| `POST`   | `/api/todos`      | TODO作成     |
+| `PUT`    | `/api/todos/{id}` | TODO更新     |
+| `DELETE` | `/api/todos/{id}` | TODO削除     |
+
+### 📊 データモデル
+
+#### Todo
+
+```typescript
+interface Todo {
+  id: number; // Unix時刻（ミリ秒）
+  text: string; // TODOテキスト
+  completed: boolean; // 完了状態
+}
+```
+
+#### API リクエスト
+
+```typescript
+// TODO作成
+interface CreateTodoRequest {
+  text: string; // 必須、空文字不可
+}
+
+// TODO更新
+interface UpdateTodoRequest {
+  completed: boolean; // 完了状態
+}
+```
+
+### 🌐 API使用例
+
+```bash
+# TODO一覧取得
+curl -X GET https://my-rust-worker.your-subdomain.workers.dev/api/todos
+
+# TODO作成
+curl -X POST https://my-rust-worker.your-subdomain.workers.dev/api/todos \
+  -H "Content-Type: application/json" \
+  -d '{"text": "新しいタスク"}'
+
+# TODO更新（完了）
+curl -X PUT https://my-rust-worker.your-subdomain.workers.dev/api/todos/1708781445000 \
+  -H "Content-Type: application/json" \
+  -d '{"completed": true}'
+
+# TODO削除
+curl -X DELETE https://my-rust-worker.your-subdomain.workers.dev/api/todos/1708781445000
+```
+
+## 技術仕様
+
+### アーキテクチャ
+
+```
+┌─────────────────┐    ┌─────────────────┐
+│   SvelteKit     │    │   Rust Worker   │
+│   Frontend      │◄──►│   (Axum API)    │
+│ (Cloudflare     │    │ (Cloudflare     │
+│  Pages)         │    │  Workers)       │
+└─────────────────┘    └─────────────────┘
+```
+
+### フロントエンド技術
+
+- **フレームワーク**: SvelteKit 5.x
+- **言語**: TypeScript
+- **スタイル**: CSS（独自スタイル）
+- **ビルドツール**: Vite
+- **パッケージマネージャー**: pnpm
+- **ホスティング**: Cloudflare Pages
+- **PWA**: Service Worker対応
+
+### バックエンド技術
+
+- **言語**: Rust 1.70+
+- **フレームワーク**: Axum（WebAssembly対応）
+- **ランタイム**: Cloudflare Workers
+- **ビルドツール**: worker-build
+- **CORS**: tower-http
+- **データ保存**: インメモリ（HashMap）
+
+### 開発環境
+
+- **Node.js**: 18.x 以上
+- **Rust**: 1.70.x 以上
+- **Wrangler CLI**: 3.x 以上
+- **pnpm**: 8.x 以上
+
+## 開発ガイド
+
+### ローカル開発の開始
+
+```bash
+# リポジトリのクローン
+git clone <repository-url>
+cd rust-todo-app
+
+# 依存関係のインストール
+cd front
+pnpm install
+
+# Rust Worker の起動（新しいターミナル）
+cd ../my-rust-worker
+wrangler dev
+
+# フロントエンドの起動（別のターミナル）
+cd ../front
+pnpm run dev
+```
+
+### ビルドとデプロイ
+
+```bash
+# Rust Worker のデプロイ
+cd my-rust-worker
+wrangler deploy
+
+# フロントエンドのビルドとデプロイ
+cd ../front
+pnpm run build
+pnpm run deploy
+```
+
+### テスト実行
+
+```bash
+# フロントエンドのテスト
+cd front
+pnpm run test        # 単体テスト
+pnpm run test:e2e    # E2Eテスト
+```
+
 ## トラブルシューティング
 
 ### CORS エラーが発生する場合
