@@ -7,6 +7,9 @@
 - **[README.md](./README.md)**  
   プロジェクト概要、セットアップ手順、基本的な使い方
 
+- **[ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)**  
+  環境変数設定ガイド（API URLの設定方法など）
+
 - **[openapi.yaml](./openapi.yaml)**  
   完全なAPI仕様（OpenAPI 3.0.3準拠）
 
@@ -18,8 +21,9 @@
 新しい開発者の方は以下の順序で読むことをお勧めします：
 
 1. [README.md](./README.md) - プロジェクト概要とセットアップ
-2. [DEVELOPMENT.md](./DEVELOPMENT.md) - 開発環境の構築
-3. [openapi.yaml](./openapi.yaml) - API仕様の確認
+2. [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) - 環境変数の設定
+3. [DEVELOPMENT.md](./DEVELOPMENT.md) - 開発環境の構築
+4. [openapi.yaml](./openapi.yaml) - API仕様の確認
 
 ## 📋 API仕様の確認方法
 
@@ -44,6 +48,7 @@ npx @apidevtools/swagger-parser validate openapi.yaml
 
 ## 🔧 開発に関する質問
 
+- **環境変数設定**: [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)
 - **セットアップ**: [DEVELOPMENT.md#開発環境のセットアップ](./DEVELOPMENT.md#開発環境のセットアップ)
 - **API使用方法**: [README.md#api仕様](./README.md#api仕様)
 - **デプロイ手順**: [DEVELOPMENT.md#デプロイメント](./DEVELOPMENT.md#デプロイメント)

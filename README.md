@@ -37,15 +37,22 @@ wrangler deploy
 # 例: https://my-rust-worker.your-subdomain.workers.dev
 ```
 
-### 2. フロントエンドの設定
+### 2. 環境変数の設定
 
-デプロイしたRust WorkerのURLを`front/src/lib/api.ts`で更新してください：
+環境変数でAPI URLを設定します。環境設定ファイルを作成してください：
 
-```typescript
-const API_BASE_URL = dev
-  ? "http://localhost:8787" // 開発時のワーカーURL
-  : "https://my-rust-worker.your-subdomain.workers.dev"; // ← ここを実際のURLに変更
+```bash
+cd front
+
+# 環境設定ファイルを作成
+cp .env.example .env.local
+
+# .env.local を編集してAPI URLを設定
+# 例：
+# PUBLIC_API_BASE_URL=https://my-rust-worker.your-subdomain.workers.dev
 ```
+
+📋 **詳細な環境変数設定については [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) を参照してください。**
 
 ### 3. フロントエンドのビルドとデプロイ
 
@@ -69,7 +76,21 @@ Cloudflare Pagesでのデプロイ設定：
 
 ## 開発環境
 
-### Rust Workerの開発
+### 1. 環境変数の設定
+
+最初に環境変数を設定してください：
+
+```bash
+cd front
+
+# 開発用環境設定ファイルを作成
+cp .env.example .env.local
+
+# 設定例（開発環境）
+echo "PUBLIC_API_BASE_URL=http://localhost:8787" > .env.local
+```
+
+### 2. Rust Workerの開発
 
 ```bash
 cd my-rust-worker
@@ -78,7 +99,7 @@ cd my-rust-worker
 wrangler dev
 ```
 
-### フロントエンドの開発
+### 3. フロントエンドの開発
 
 ```bash
 cd front
@@ -89,6 +110,8 @@ pnpm install
 # 開発サーバーを起動（localhost:5173）
 pnpm run dev
 ```
+
+💡 **環境変数の詳細設定や本番環境での使い方については [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) を参照してください。**
 
 ## API エンドポイント
 
