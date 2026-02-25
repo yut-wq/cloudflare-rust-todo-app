@@ -5,8 +5,10 @@ use axum::{
     routing::{delete, get, post, put},
     Router,
 };
+use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::sync::Mutex;
 use tower_http::cors::{Any, CorsLayer};
 use tower_service::Service;
 use worker::*;
@@ -31,18 +33,9 @@ pub struct UpdateTodoRequest {
     pub completed: bool,
 }
 
-// グローバル状態を単純化
-static mut TODOS: Option<HashMap<u64, Todo>> = None;
-static mut INITIALIZED: bool = false;
-
-fn get_todos_store() -> &'static mut HashMap<u64, Todo> {
-    unsafe {
-        if !INITIALIZED {
-            TODOS = Some(HashMap::new());
-            INITIALIZED = true;
-        }
-        TODOS.as_mut().unwrap()
-    }
+// グローバルなTODOストレージ（スレッドセーフ）
+lazy_static! {
+    static ref TODOS: Mutex<HashMap<u64, Todo>> = Mutex::new(HashMap::new());
 }
 
 fn router() -> Router {
@@ -76,14 +69,18 @@ pub async fn root() -> &'static str {
 
 // 全TODO取得
 async fn get_todos() -> Result<Json<Vec<Todo>>, StatusCode> {
-    let todos = get_todos_store();
+    let todos = TODOS
+        .lock()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
     let todo_list: Vec<Todo> = todos.values().cloned().collect();
     Ok(Json(todo_list))
 }
 
 // TODO作成
 async fn create_todo(Json(request): Json<CreateTodoRequest>) -> Result<Json<Todo>, StatusCode> {
-    let todos = get_todos_store();
+    let mut todos = TODOS
+        .lock()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     // 現在時刻をIDとして使用
     let id = js_sys::Date::now() as u64;
@@ -107,7 +104,9 @@ async fn update_todo(
     Path(id): Path<u64>,
     Json(request): Json<UpdateTodoRequest>,
 ) -> Result<Json<Todo>, StatusCode> {
-    let todos = get_todos_store();
+    let mut todos = TODOS
+        .lock()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     match todos.get_mut(&id) {
         Some(todo) => {
@@ -120,7 +119,9 @@ async fn update_todo(
 
 // TODO削除
 async fn delete_todo(Path(id): Path<u64>) -> Result<StatusCode, StatusCode> {
-    let todos = get_todos_store();
+    let mut todos = TODOS
+        .lock()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     match todos.remove(&id) {
         Some(_) => Ok(StatusCode::NO_CONTENT),
