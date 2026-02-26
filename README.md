@@ -2,6 +2,9 @@
 
 Cloudflare Pages（フロントエンド）とRust Worker（API）で構築されたTODOアプリケーションです。
 
+
+<img width="1926" height="1084" alt="rust-todo-app" src="https://github.com/user-attachments/assets/65b04a1f-4c33-46b1-b0db-43226f9bc7af" />
+
 ## 構成
 
 - **フロントエンド**: SvelteKit + TypeScript
