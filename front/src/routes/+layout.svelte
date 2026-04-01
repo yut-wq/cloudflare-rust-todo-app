@@ -22,7 +22,8 @@
 		padding: 0;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 		min-height: 100vh;
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+		font-family:
+			-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 	}
 
 	:global(*) {
