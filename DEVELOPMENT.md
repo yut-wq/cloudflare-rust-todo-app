@@ -35,6 +35,50 @@ rustc --version
 cargo --version
 ```
 
+### Git フックのインストール
+
+[prek](https://github.com/j178/prek) を使って `git push` 前にリンターとフォーマッターを自動チェックします。
+
+**prek のインストール:**
+
+```bash
+# Windows (winget)
+winget install --id j178.Prek
+
+# Windows (scoop)
+scoop install main/prek
+
+# macOS
+brew install prek
+
+# その他: https://prek.j178.dev/installation/
+```
+
+**Git フックの有効化:**
+
+```bash
+# リポジトリルートで実行
+prek install
+```
+
+これで `git push` 時に以下のチェックが自動実行されます：
+
+| フック | 対象 | 内容 |
+|--------|------|------|
+| `frontend-lint` | `front/` 以下の変更時 | Prettier フォーマットチェック + ESLint |
+| `rust-fmt` | `my-rust-worker/` 以下の `.rs` ファイル変更時 | `cargo fmt --check` |
+| `rust-clippy` | `my-rust-worker/` 以下の `.rs` ファイル変更時 | `cargo clippy -D warnings` |
+
+**手動実行（任意のタイミングでチェックしたい場合）:**
+
+```bash
+# 全ファイルに対してチェック
+prek run --all-files --stage pre-push
+
+# 特定のフックのみ実行
+prek run frontend-lint --stage pre-push
+```
+
 ### 開発サーバーの起動
 
 2つのターミナルが必要です：

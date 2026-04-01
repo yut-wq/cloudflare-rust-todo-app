@@ -34,7 +34,7 @@
 	// コンポーネントマウント時にTODOを読み込み
 	onMount(async () => {
 		await loadTodos();
-		
+
 		// Service Workerを登録
 		registerServiceWorker();
 	});
@@ -53,35 +53,36 @@
 	// TODOを削除
 	async function deleteTodo(id: number) {
 		const result = await handleApiCall(() => todoApi.deleteTodo(id));
-		if (result !== null) { // エラーが発生していない場合
-			todos = todos.filter(todo => todo.id !== id);
+		if (result !== null) {
+			// エラーが発生していない場合
+			todos = todos.filter((todo) => todo.id !== id);
 		}
 	}
 
 	// TODOの完了状態を切り替え
 	async function toggleTodo(id: number) {
-		const todo = todos.find(t => t.id === id);
+		const todo = todos.find((t) => t.id === id);
 		if (todo) {
 			const result = await handleApiCall(() => todoApi.updateTodo(id, !todo.completed));
 			if (result) {
-				todos = todos.map(t => t.id === id ? result : t);
+				todos = todos.map((t) => (t.id === id ? result : t));
 			}
 		}
 	}
 
 	// 完了済みTODOをクリア
 	async function clearCompleted() {
-		const completedTodos = todos.filter(todo => todo.completed);
-		
+		const completedTodos = todos.filter((todo) => todo.completed);
+
 		// 全ての完了済みTODOを削除
-		const deletionPromises = completedTodos.map(todo => 
+		const deletionPromises = completedTodos.map((todo) =>
 			handleApiCall(() => todoApi.deleteTodo(todo.id))
 		);
-		
+
 		await Promise.all(deletionPromises);
-		
+
 		// UIを更新（エラーが発生していないもののみ除外）
-		todos = todos.filter(todo => !todo.completed);
+		todos = todos.filter((todo) => !todo.completed);
 	}
 
 	// Enterキーで追加
@@ -92,8 +93,8 @@
 	}
 
 	// 統計情報
-	const remainingCount = $derived(todos.filter(todo => !todo.completed).length);
-	const completedCount = $derived(todos.filter(todo => todo.completed).length);
+	const remainingCount = $derived(todos.filter((todo) => !todo.completed).length);
+	const completedCount = $derived(todos.filter((todo) => todo.completed).length);
 </script>
 
 <svelte:head>
@@ -111,9 +112,7 @@
 		{#if error}
 			<div class="error">
 				<p>⚠️ エラーが発生しました: {error}</p>
-				<button onclick={() => (error = null)} class="error-dismiss">
-					閉じる
-				</button>
+				<button onclick={() => (error = null)} class="error-dismiss"> 閉じる </button>
 			</div>
 		{/if}
 
@@ -165,9 +164,7 @@
 							class="todo-checkbox"
 						/>
 						<span class="todo-text">{todo.text}</span>
-						<button onclick={() => deleteTodo(todo.id)} class="delete-btn">
-							🗑️
-						</button>
+						<button onclick={() => deleteTodo(todo.id)} class="delete-btn"> 🗑️ </button>
 					</div>
 				{/each}
 			</div>
@@ -346,8 +343,12 @@
 	}
 
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	.stats {
@@ -510,7 +511,7 @@
 		:global(body) {
 			background-color: #111827;
 		}
-		
+
 		.app {
 			background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
 		}

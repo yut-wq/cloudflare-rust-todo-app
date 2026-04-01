@@ -1,0 +1,34 @@
+default_install_hook_types = ["pre-push"]
+
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "frontend-lint"
+name = "Frontend - prettier + eslint"
+language = "system"
+entry = "pnpm"
+args = ["--dir", "front", "run", "lint"]
+pass_filenames = false
+always_run = true
+stages = ["pre-push"]
+
+[[repos.hooks]]
+id = "rust-fmt"
+name = "Rust - cargo fmt check"
+language = "system"
+entry = "cargo"
+args = ["fmt", "--manifest-path", "my-rust-worker/Cargo.toml", "--", "--check"]
+pass_filenames = false
+always_run = true
+stages = ["pre-push"]
+
+[[repos.hooks]]
+id = "rust-clippy"
+name = "Rust - cargo clippy"
+language = "system"
+entry = "cargo"
+args = ["clippy", "--manifest-path", "my-rust-worker/Cargo.toml", "--", "-D", "warnings"]
+pass_filenames = false
+always_run = true
+stages = ["pre-push"]
