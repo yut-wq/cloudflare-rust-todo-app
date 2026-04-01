@@ -10,7 +10,7 @@ language = "system"
 entry = "pnpm"
 args = ["--dir", "front", "run", "lint"]
 pass_filenames = false
-files = '^front/'
+always_run = true
 stages = ["pre-push"]
 
 [[repos.hooks]]
@@ -20,7 +20,7 @@ language = "system"
 entry = "cargo"
 args = ["fmt", "--manifest-path", "my-rust-worker/Cargo.toml", "--", "--check"]
 pass_filenames = false
-files = '^my-rust-worker/.*\.rs$'
+always_run = true
 stages = ["pre-push"]
 
 [[repos.hooks]]
@@ -30,5 +30,5 @@ language = "system"
 entry = "cargo"
 args = ["clippy", "--manifest-path", "my-rust-worker/Cargo.toml", "--", "-D", "warnings"]
 pass_filenames = false
-files = '^my-rust-worker/.*\.rs$'
+always_run = true
 stages = ["pre-push"]
